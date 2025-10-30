@@ -58,6 +58,8 @@ export const tasks = pgTable("tasks", {
   title: text("title").notNull(),
   description: text("description"),
   completed: boolean("completed").notNull().default(false),
+  isImportant: boolean("is_important").notNull().default(false),
+  dueDate: timestamp("due_date", { withTimezone: true }),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -79,6 +81,8 @@ export const insertTaskSchema = createInsertSchema(tasks, {
   title: z.string().min(1, "Title is required"),
   description: z.string().nullable().optional(),
   completed: z.boolean().default(false),
+  isImportant: z.boolean().default(false),
+  dueDate: z.string().min(1).nullable().optional().or(z.null()).or(z.literal("")),
 }).omit({
   id: true,
   userId: true,
