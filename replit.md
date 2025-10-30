@@ -2,11 +2,14 @@
 
 ## Overview
 
-TaskFlow is a minimal task management application built with a modern full-stack architecture. The application enables users to create, manage, and track tasks with a clean, Linear-inspired interface. It features simple username/password authentication, persistent storage with PostgreSQL, and a React-based frontend with shadcn/ui components.
+TaskFlow is a minimal task management application built with a modern full-stack architecture. The application enables users to create, manage, and track tasks with a playful, joyful interface. It features simple username/password authentication, persistent storage with PostgreSQL, and a React-based frontend with shadcn/ui components.
 
-The application prioritizes clarity, efficiency, and minimal friction in task management workflows, following a "Design System-Based (Productivity Focus)" approach with generous spacing, scannable hierarchy, and contextual actions.
+The application prioritizes clarity, efficiency, and minimal friction in task management workflows, following a "Playful Productivity" design approach with vibrant colors, generous spacing, scannable hierarchy, and contextual actions.
 
-**Latest Update (Oct 30, 2025)**: Migrated from Replit Auth to simple username/password authentication for better user experience and easier setup.
+**Latest Update (Oct 30, 2025)**: 
+- Added importance flag feature - tasks can be marked as important with visual star badges and gradient highlighting
+- Added due date & time functionality - users can set deadlines with color-coded badges (overdue/today/future)
+- Previously: Migrated from Replit Auth to simple username/password authentication
 
 ## User Preferences
 
@@ -38,9 +41,10 @@ Preferred communication style: Simple, everyday language.
 - Centralized validation schemas shared between client and server
 
 **Design System**:
-- Linear-inspired minimal aesthetic with Material Design form patterns
-- Typography scale: Inter (400, 500, 600 weights) for UI, JetBrains Mono for metadata
-- Spacing system based on Tailwind units (2, 4, 6, 8)
+- Playful, joyful aesthetic with vibrant purple/cyan/yellow color scheme
+- Typography: Poppins font family for a friendly, approachable feel
+- Generous spacing with rounded corners (rounded-2xl/3xl/full)
+- Gradient backgrounds and cheerful visual elements
 - Max-width container (max-w-4xl) for optimal task list readability
 - Responsive single-column layout collapsing appropriately on mobile
 
@@ -107,6 +111,8 @@ Preferred communication style: Simple, everyday language.
    - title (text, required)
    - description (text, optional)
    - completed (boolean, default false)
+   - isImportant (boolean, default false) - marks task as high priority
+   - dueDate (timestamp with timezone, nullable) - task deadline
    - createdAt, updatedAt (timestamp)
 
 **Data Access Pattern**:
@@ -209,5 +215,25 @@ Preferred communication style: Simple, everyday language.
 
 ### Font Dependencies
 
-- Google Fonts: Inter (weights 400, 500, 600) for interface
-- Google Fonts: JetBrains Mono (weights 400, 500) for monospace elements
+- Google Fonts: Poppins (weights 400, 500, 600, 700) for interface
+- Playful, friendly typography supporting the joyful design aesthetic
+
+## Task Features
+
+### Importance Flag
+Tasks can be marked as important to highlight priority work:
+- **Visual Indicators**: Yellow star icon, subtle gradient background, highlighted border
+- **UI Controls**: Toggle switch in task creation/edit dialog with star icon
+- **Storage**: Boolean field `isImportant` (default false) in database
+- **Display**: Important tasks show filled star icon and special gradient styling
+
+### Due Dates
+Tasks can have deadlines with specific date and time:
+- **Input**: HTML datetime-local picker for selecting date and time
+- **Storage**: Timestamp with timezone in database (nullable)
+- **Display**: Color-coded badges with calendar and clock icons:
+  - Red/destructive badge for overdue tasks
+  - Primary badge for tasks due today
+  - Secondary/gray badge for future tasks
+- **Formatting**: Smart date/time display (e.g., "Oct 31, 2:30 PM")
+- **Validation**: Accepts datetime-local format strings, treats empty as null
