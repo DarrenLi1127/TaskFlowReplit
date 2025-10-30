@@ -66,8 +66,10 @@ export class DatabaseStorage implements IStorage {
     const [task] = await db
       .insert(tasks)
       .values({
-        ...taskData,
         userId,
+        title: taskData.title,
+        description: taskData.description,
+        completed: taskData.completed,
       })
       .returning();
     return task;
