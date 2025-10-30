@@ -2,9 +2,11 @@
 
 ## Overview
 
-TaskFlow is a minimal task management application built with a modern full-stack architecture. The application enables users to create, manage, and track tasks with a clean, Linear-inspired interface. It features user authentication via Replit Auth, persistent storage with PostgreSQL, and a React-based frontend with shadcn/ui components.
+TaskFlow is a minimal task management application built with a modern full-stack architecture. The application enables users to create, manage, and track tasks with a clean, Linear-inspired interface. It features simple username/password authentication, persistent storage with PostgreSQL, and a React-based frontend with shadcn/ui components.
 
 The application prioritizes clarity, efficiency, and minimal friction in task management workflows, following a "Design System-Based (Productivity Focus)" approach with generous spacing, scannable hierarchy, and contextual actions.
+
+**Latest Update (Oct 30, 2025)**: Migrated from Replit Auth to simple username/password authentication for better user experience and easier setup.
 
 ## User Preferences
 
@@ -16,9 +18,10 @@ Preferred communication style: Simple, everyday language.
 
 **Framework**: React with TypeScript using Vite as the build tool
 
-**Routing**: Wouter for client-side routing with two main routes:
-- Landing page for unauthenticated users
-- Home page with task management interface for authenticated users
+**Routing**: Wouter for client-side routing with three main routes:
+- Landing page (/) for unauthenticated users
+- Auth page (/auth) with login and register forms
+- Home page (/) with task management interface for authenticated users
 
 **UI Components**: shadcn/ui component library (New York style variant) with Radix UI primitives
 - Design system configured for productivity with Inter font family
@@ -53,6 +56,9 @@ Preferred communication style: Simple, everyday language.
 - `server/replitAuth.ts` - Authentication middleware and session management
 
 **API Design**: RESTful API endpoints:
+- `POST /api/register` - Register a new user with username/password
+- `POST /api/login` - Login with username/password
+- `POST /api/logout` - Logout current user
 - `GET /api/auth/user` - Get current authenticated user
 - `GET /api/tasks` - List all tasks for authenticated user
 - `GET /api/tasks/:id` - Get single task by ID
@@ -84,16 +90,15 @@ Preferred communication style: Simple, everyday language.
 
 **Database Schema**:
 
-1. **sessions table** - Session storage for Replit Auth
+1. **sessions table** - Session storage for user authentication
    - sid (varchar, primary key)
    - sess (jsonb)
    - expire (timestamp with index)
 
-2. **users table** - User profiles from Replit Auth
+2. **users table** - User accounts with username/password
    - id (varchar, primary key, UUID default)
-   - email (varchar, unique)
-   - firstName, lastName (varchar)
-   - profileImageUrl (varchar)
+   - username (varchar, unique, not null)
+   - password (varchar, not null, bcrypt hashed)
    - createdAt, updatedAt (timestamp)
 
 3. **tasks table** - Task management
@@ -112,30 +117,32 @@ Preferred communication style: Simple, everyday language.
 
 ### Authentication & Authorization
 
-**Authentication Provider**: Replit OpenID Connect (OIDC)
-- Discovery endpoint: https://replit.com/oidc or ISSUER_URL environment variable
-- Passport.js strategy for OIDC integration
-- Token management with access_token and refresh_token storage
+**Authentication**: Simple username/password authentication
+- bcryptjs for password hashing (10 rounds)
+- Registration with username validation (min 3 characters)
+- Password validation (min 6 characters)
+- Login with username/password credentials
 
 **Session Management**:
 - Express session middleware with PostgreSQL storage (connect-pg-simple)
 - 7-day session TTL with secure, httpOnly cookies
-- Session data stored in sessions table
+- Session data stored in sessions table with userId
 - SESSION_SECRET environment variable for session encryption
 
 **Authorization**:
 - isAuthenticated middleware protecting routes
-- User identification via JWT claims (sub claim)
+- User identification via session.userId
 - Per-user data isolation enforced at storage layer
-- Automatic user profile creation/update via upsertUser on login
+- Passwords never returned in API responses (excluded from user objects)
 
 **Auth Flow**:
-1. User clicks "Sign In" → redirects to /api/login
-2. OIDC provider authentication → callback with tokens
-3. User profile upserted in database
-4. Session created with claims and tokens
-5. Client redirected to home page
-6. Protected routes verify session and extract userId
+1. User clicks "Sign In" or "Get Started" → navigates to /auth
+2. User can choose to login or register using tabs
+3. On registration: password is hashed and user is created
+4. On login: password is verified against stored hash
+5. Session is created with userId
+6. Client redirected to home page
+7. Protected routes verify session and extract userId
 
 ### Build & Development
 
@@ -161,20 +168,13 @@ Preferred communication style: Simple, everyday language.
 **Environment Configuration**:
 - DATABASE_URL (required) - PostgreSQL connection string
 - SESSION_SECRET (required) - Session encryption key
-- ISSUER_URL (optional) - OIDC provider URL
-- REPL_ID (optional) - Replit environment identifier
 - NODE_ENV - Environment mode (development/production)
 
 ## External Dependencies
 
 ### Third-Party Services
 
-1. **Replit Authentication (OIDC)**
-   - Purpose: User authentication and identity management
-   - Integration: OpenID Connect via passport.js
-   - Required environment variables: ISSUER_URL, REPL_ID, SESSION_SECRET
-
-2. **Neon Serverless PostgreSQL**
+1. **Neon Serverless PostgreSQL**
    - Purpose: Primary data persistence layer
    - Integration: @neondatabase/serverless driver with WebSocket support
    - Required environment variable: DATABASE_URL
@@ -195,8 +195,7 @@ Preferred communication style: Simple, everyday language.
 **Backend Dependencies**:
 - express - Web framework
 - drizzle-orm - Type-safe ORM
-- passport - Authentication middleware
-- openid-client - OIDC client with Passport strategy
+- bcryptjs - Password hashing
 - express-session - Session middleware
 - connect-pg-simple - PostgreSQL session store
 - ws - WebSocket client for Neon

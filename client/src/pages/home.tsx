@@ -8,7 +8,7 @@ import type { Task, InsertTask, UpdateTask } from "@shared/schema";
 
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { 
   DropdownMenu,
   DropdownMenuContent,
@@ -50,7 +50,7 @@ export default function Home() {
           variant: "destructive",
         });
         setTimeout(() => {
-          window.location.href = "/api/login";
+          window.location.href = "/auth";
         }, 500);
         return;
       }
@@ -82,7 +82,7 @@ export default function Home() {
           variant: "destructive",
         });
         setTimeout(() => {
-          window.location.href = "/api/login";
+          window.location.href = "/auth";
         }, 500);
         return;
       }
@@ -113,7 +113,7 @@ export default function Home() {
           variant: "destructive",
         });
         setTimeout(() => {
-          window.location.href = "/api/login";
+          window.location.href = "/auth";
         }, 500);
         return;
       }
@@ -140,7 +140,7 @@ export default function Home() {
           variant: "destructive",
         });
         setTimeout(() => {
-          window.location.href = "/api/login";
+          window.location.href = "/auth";
         }, 500);
         return;
       }
@@ -153,23 +153,28 @@ export default function Home() {
   });
 
   const getUserInitials = () => {
-    if (user?.firstName && user?.lastName) {
-      return `${user.firstName[0]}${user.lastName[0]}`.toUpperCase();
-    }
-    if (user?.email) {
-      return user.email[0].toUpperCase();
+    if (user?.username) {
+      return user.username.substring(0, 2).toUpperCase();
     }
     return "U";
   };
 
   const getUserDisplayName = () => {
-    if (user?.firstName && user?.lastName) {
-      return `${user.firstName} ${user.lastName}`;
+    return user?.username || "User";
+  };
+
+  const handleLogout = async () => {
+    try {
+      await apiRequest("POST", "/api/logout", undefined);
+      queryClient.clear();
+      window.location.href = "/";
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to logout",
+        variant: "destructive",
+      });
     }
-    if (user?.email) {
-      return user.email;
-    }
-    return "User";
   };
 
   const incompleteTasks = tasks?.filter(task => !task.completed) || [];
@@ -193,11 +198,6 @@ export default function Home() {
                 data-testid="button-user-menu"
               >
                 <Avatar className="h-8 w-8">
-                  <AvatarImage 
-                    src={user?.profileImageUrl || undefined} 
-                    alt={getUserDisplayName()}
-                    className="object-cover"
-                  />
                   <AvatarFallback>{getUserInitials()}</AvatarFallback>
                 </Avatar>
               </Button>
@@ -205,34 +205,22 @@ export default function Home() {
             <DropdownMenuContent align="end" className="w-56">
               <div className="flex items-center gap-2 p-2">
                 <Avatar className="h-8 w-8">
-                  <AvatarImage 
-                    src={user?.profileImageUrl || undefined} 
-                    alt={getUserDisplayName()}
-                    className="object-cover"
-                  />
                   <AvatarFallback>{getUserInitials()}</AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col">
                   <p className="text-sm font-medium" data-testid="text-user-name">
                     {getUserDisplayName()}
                   </p>
-                  {user?.email && (
-                    <p className="text-xs text-muted-foreground" data-testid="text-user-email">
-                      {user.email}
-                    </p>
-                  )}
                 </div>
               </div>
               <DropdownMenuSeparator />
-              <DropdownMenuItem asChild>
-                <a 
-                  href="/api/logout"
-                  className="flex items-center cursor-pointer"
-                  data-testid="button-logout"
-                >
-                  <LogOut className="mr-2 h-4 w-4" />
-                  <span>Sign Out</span>
-                </a>
+              <DropdownMenuItem 
+                onClick={handleLogout}
+                className="cursor-pointer"
+                data-testid="button-logout"
+              >
+                <LogOut className="mr-2 h-4 w-4" />
+                <span>Sign Out</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

@@ -11,7 +11,7 @@ export default function Landing() {
             <span className="text-xl font-semibold">TaskFlow</span>
           </div>
           <Button 
-            onClick={() => window.location.href = '/api/login'}
+            onClick={() => window.location.href = '/auth'}
             data-testid="button-login"
           >
             Sign In
@@ -41,7 +41,7 @@ export default function Landing() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Button 
                 size="lg"
-                onClick={() => window.location.href = '/api/login'}
+                onClick={() => window.location.href = '/auth'}
                 className="w-full sm:w-auto"
                 data-testid="button-get-started"
               >
