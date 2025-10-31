@@ -6,9 +6,7 @@ TaskFlow is a minimal task management application built with a modern full-stack
 
 The application prioritizes clarity, efficiency, and minimal friction in task management workflows, following a "Design System-Based (Productivity Focus)" approach with generous spacing, scannable hierarchy, and contextual actions.
 
-**Latest Update (Oct 31, 2025)**: Added user profile feature with customizable display name, email, bio, and avatar.
-
-**Previous Update (Oct 30, 2025)**: Migrated from Replit Auth to simple username/password authentication for better user experience and easier setup.
+**Latest Update (Oct 30, 2025)**: Migrated from Replit Auth to simple username/password authentication for better user experience and easier setup.
 
 ## User Preferences
 
@@ -20,11 +18,10 @@ Preferred communication style: Simple, everyday language.
 
 **Framework**: React with TypeScript using Vite as the build tool
 
-**Routing**: Wouter for client-side routing with four main routes:
+**Routing**: Wouter for client-side routing with three main routes:
 - Landing page (/) for unauthenticated users
 - Auth page (/auth) with login and register forms
 - Home page (/) with task management interface for authenticated users
-- Profile page (/profile) for managing user profile information
 
 **UI Components**: shadcn/ui component library (New York style variant) with Radix UI primitives
 - Design system configured for productivity with Inter font family
@@ -63,8 +60,6 @@ Preferred communication style: Simple, everyday language.
 - `POST /api/login` - Login with username/password
 - `POST /api/logout` - Logout current user
 - `GET /api/auth/user` - Get current authenticated user
-- `GET /api/profile` - Get current user's profile (creates empty profile if none exists)
-- `PATCH /api/profile` - Update current user's profile
 - `GET /api/tasks` - List all tasks for authenticated user
 - `GET /api/tasks/:id` - Get single task by ID
 - `POST /api/tasks` - Create new task
@@ -106,16 +101,7 @@ Preferred communication style: Simple, everyday language.
    - password (varchar, not null, bcrypt hashed)
    - createdAt, updatedAt (timestamp)
 
-3. **profiles table** - User profile information (1:1 with users)
-   - id (varchar, primary key, UUID default)
-   - userId (varchar, foreign key to users, unique, cascade on delete)
-   - displayName (varchar, optional)
-   - email (varchar, optional)
-   - bio (text, optional)
-   - avatarUrl (varchar, optional)
-   - createdAt, updatedAt (timestamp)
-
-4. **tasks table** - Task management
+3. **tasks table** - Task management
    - id (integer, auto-incrementing primary key)
    - userId (varchar, foreign key to users with cascade delete)
    - title (text, required)
@@ -126,9 +112,8 @@ Preferred communication style: Simple, everyday language.
 **Data Access Pattern**:
 - Repository pattern via DatabaseStorage class implementing IStorage interface
 - Type-safe operations with Drizzle's query builder
-- Row-level security through userId filtering on all task and profile operations
-- Automatic profile creation on first access (lazy initialization)
-- 1:1 relationship enforcement between users and profiles
+- Row-level security through userId filtering on all task operations
+- Upsert pattern for user authentication flow
 
 ### Authentication & Authorization
 
