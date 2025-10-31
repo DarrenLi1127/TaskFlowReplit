@@ -18,8 +18,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { TaskItem } from "@/components/task-item";
 import { TaskDialog } from "@/components/task-dialog";
-import { Plus, ListTodo, LogOut, User, Settings } from "lucide-react";
-import { Link } from "wouter";
+import { Plus, ListTodo, LogOut, User } from "lucide-react";
 
 export default function Home() {
   const { user } = useAuth();
@@ -161,7 +160,7 @@ export default function Home() {
   };
 
   const getUserDisplayName = () => {
-    return user?.displayName || user?.username || "User";
+    return user?.username || "User";
   };
 
   const handleLogout = async () => {
@@ -215,15 +214,6 @@ export default function Home() {
                 </div>
               </div>
               <DropdownMenuSeparator />
-              <Link href="/profile">
-                <DropdownMenuItem 
-                  className="cursor-pointer"
-                  data-testid="button-profile"
-                >
-                  <Settings className="mr-2 h-4 w-4" />
-                  <span>Profile Settings</span>
-                </DropdownMenuItem>
-              </Link>
               <DropdownMenuItem 
                 onClick={handleLogout}
                 className="cursor-pointer"

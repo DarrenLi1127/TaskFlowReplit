@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth, isAuthenticated, hashPassword, comparePassword } from "./auth";
-import { insertTaskSchema, updateTaskSchema, insertUserSchema, loginSchema, updateProfileSchema } from "@shared/schema";
+import { insertTaskSchema, updateTaskSchema, insertUserSchema, loginSchema } from "@shared/schema";
 import { fromError } from "zod-validation-error";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -103,48 +103,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching user:", error);
       res.status(500).json({ message: "Failed to fetch user" });
-    }
-  });
-
-  // Profile routes
-  app.get('/api/profile', isAuthenticated, async (req, res) => {
-    try {
-      const userId = req.session.userId!;
-      const user = await storage.getUser(userId);
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
-      }
-      // Return user without password
-      const { password, ...userWithoutPassword } = user;
-      res.json(userWithoutPassword);
-    } catch (error) {
-      console.error("Error fetching profile:", error);
-      res.status(500).json({ message: "Failed to fetch profile" });
-    }
-  });
-
-  app.patch('/api/profile', isAuthenticated, async (req, res) => {
-    try {
-      const userId = req.session.userId!;
-      const result = updateProfileSchema.safeParse(req.body);
-      
-      if (!result.success) {
-        return res.status(400).json({ 
-          message: fromError(result.error).toString() 
-        });
-      }
-
-      const user = await storage.updateProfile(userId, result.data);
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
-      }
-
-      // Return user without password
-      const { password, ...userWithoutPassword } = user;
-      res.json(userWithoutPassword);
-    } catch (error) {
-      console.error("Error updating profile:", error);
-      res.status(500).json({ message: "Failed to update profile" });
     }
   });
 

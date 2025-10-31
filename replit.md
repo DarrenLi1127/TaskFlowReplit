@@ -2,13 +2,11 @@
 
 ## Overview
 
-TaskFlow is a minimal task management application built with a modern full-stack architecture. The application enables users to create, manage, and track tasks with a clean, Linear-inspired interface. It features simple username/password authentication, user profiles, persistent storage with PostgreSQL, and a React-based frontend with shadcn/ui components.
+TaskFlow is a minimal task management application built with a modern full-stack architecture. The application enables users to create, manage, and track tasks with a clean, Linear-inspired interface. It features simple username/password authentication, persistent storage with PostgreSQL, and a React-based frontend with shadcn/ui components.
 
 The application prioritizes clarity, efficiency, and minimal friction in task management workflows, following a "Design System-Based (Productivity Focus)" approach with generous spacing, scannable hierarchy, and contextual actions.
 
-**Latest Updates**:
-- **Oct 31, 2025**: Added user profile feature with display name and bio fields
-- **Oct 30, 2025**: Migrated from Replit Auth to simple username/password authentication for better user experience and easier setup
+**Latest Update (Oct 30, 2025)**: Migrated from Replit Auth to simple username/password authentication for better user experience and easier setup.
 
 ## User Preferences
 
@@ -20,11 +18,10 @@ Preferred communication style: Simple, everyday language.
 
 **Framework**: React with TypeScript using Vite as the build tool
 
-**Routing**: Wouter for client-side routing with four main routes:
+**Routing**: Wouter for client-side routing with three main routes:
 - Landing page (/) for unauthenticated users
 - Auth page (/auth) with login and register forms
 - Home page (/) with task management interface for authenticated users
-- Profile page (/profile) for editing user profile information
 
 **UI Components**: shadcn/ui component library (New York style variant) with Radix UI primitives
 - Design system configured for productivity with Inter font family
@@ -63,8 +60,6 @@ Preferred communication style: Simple, everyday language.
 - `POST /api/login` - Login with username/password
 - `POST /api/logout` - Logout current user
 - `GET /api/auth/user` - Get current authenticated user
-- `GET /api/profile` - Get current user's profile
-- `PATCH /api/profile` - Update user profile (displayName, bio)
 - `GET /api/tasks` - List all tasks for authenticated user
 - `GET /api/tasks/:id` - Get single task by ID
 - `POST /api/tasks` - Create new task
@@ -100,12 +95,10 @@ Preferred communication style: Simple, everyday language.
    - sess (jsonb)
    - expire (timestamp with index)
 
-2. **users table** - User accounts with username/password and profile
+2. **users table** - User accounts with username/password
    - id (varchar, primary key, UUID default)
    - username (varchar, unique, not null)
    - password (varchar, not null, bcrypt hashed)
-   - displayName (text, nullable) - Optional display name shown in UI
-   - bio (text, nullable) - Optional user bio (max 500 characters)
    - createdAt, updatedAt (timestamp)
 
 3. **tasks table** - Task management
