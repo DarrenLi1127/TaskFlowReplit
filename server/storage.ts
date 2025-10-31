@@ -6,6 +6,7 @@ import {
   type Task,
   type InsertTask,
   type UpdateTask,
+  type UpdateProfile,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, desc } from "drizzle-orm";
@@ -15,6 +16,7 @@ export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
+  updateProfile(userId: string, profile: UpdateProfile): Promise<User | undefined>;
   
   // Task operations
   getTasks(userId: string): Promise<Task[]>;
@@ -40,6 +42,18 @@ export class DatabaseStorage implements IStorage {
     const [user] = await db
       .insert(users)
       .values(userData)
+      .returning();
+    return user;
+  }
+
+  async updateProfile(userId: string, profileData: UpdateProfile): Promise<User | undefined> {
+    const [user] = await db
+      .update(users)
+      .set({
+        ...profileData,
+        updatedAt: new Date(),
+      })
+      .where(eq(users.id, userId))
       .returning();
     return user;
   }

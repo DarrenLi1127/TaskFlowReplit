@@ -29,6 +29,8 @@ export const users = pgTable("users", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   username: varchar("username").notNull().unique(),
   password: varchar("password").notNull(),
+  displayName: text("display_name"),
+  bio: text("bio"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -47,8 +49,14 @@ export const loginSchema = z.object({
   password: z.string().min(1, "Password is required"),
 });
 
+export const updateProfileSchema = z.object({
+  displayName: z.string().max(50, "Display name must be 50 characters or less").nullable().optional(),
+  bio: z.string().max(500, "Bio must be 500 characters or less").nullable().optional(),
+});
+
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type LoginCredentials = z.infer<typeof loginSchema>;
+export type UpdateProfile = z.infer<typeof updateProfileSchema>;
 export type User = typeof users.$inferSelect;
 
 // Tasks table
