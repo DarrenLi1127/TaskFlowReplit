@@ -60,6 +60,8 @@ Preferred communication style: Simple, everyday language.
 - `POST /api/login` - Login with username/password
 - `POST /api/logout` - Logout current user
 - `GET /api/auth/user` - Get current authenticated user
+- `GET /api/profile` - Get user profile (returns empty profile if none exists)
+- `PATCH /api/profile` - Create or update user profile
 - `GET /api/tasks` - List all tasks for authenticated user
 - `GET /api/tasks/:id` - Get single task by ID
 - `POST /api/tasks` - Create new task
@@ -101,7 +103,15 @@ Preferred communication style: Simple, everyday language.
    - password (varchar, not null, bcrypt hashed)
    - createdAt, updatedAt (timestamp)
 
-3. **tasks table** - Task management
+3. **user_profiles table** - User profile information
+   - id (integer, auto-incrementing primary key)
+   - userId (varchar, foreign key to users with cascade delete, unique)
+   - bio (text, optional)
+   - avatarUrl (text, optional)
+   - location (text, optional)
+   - createdAt, updatedAt (timestamp)
+
+4. **tasks table** - Task management
    - id (integer, auto-incrementing primary key)
    - userId (varchar, foreign key to users with cascade delete)
    - title (text, required)
