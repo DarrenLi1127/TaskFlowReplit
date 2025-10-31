@@ -75,11 +75,7 @@ export const tasksRelations = relations(tasks, ({ one }) => ({
 }));
 
 // Zod schemas for validation
-export const insertTaskSchema = createInsertSchema(tasks, {
-  title: z.string().min(1, "Title is required"),
-  description: z.string().nullable().optional(),
-  completed: z.boolean().default(false),
-}).omit({
+export const insertTaskSchema = createInsertSchema(tasks).omit({
   id: true,
   userId: true,
   createdAt: true,
