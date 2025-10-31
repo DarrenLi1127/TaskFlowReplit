@@ -66,9 +66,7 @@ export class DatabaseStorage implements IStorage {
       .insert(tasks)
       .values({
         userId,
-        title: taskData.title,
-        description: taskData.description,
-        completed: taskData.completed,
+        ...taskData,
       })
       .returning();
     return task;
