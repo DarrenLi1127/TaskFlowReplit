@@ -1,15 +1,11 @@
 import {
   users,
   tasks,
-  userProfiles,
   type User,
   type InsertUser,
   type Task,
   type InsertTask,
   type UpdateTask,
-  type UserProfile,
-  type InsertProfile,
-  type UpdateProfile,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, desc } from "drizzle-orm";
@@ -19,11 +15,6 @@ export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
-  
-  // Profile operations
-  getProfile(userId: string): Promise<UserProfile | undefined>;
-  createProfile(userId: string, profileData: InsertProfile): Promise<UserProfile>;
-  updateProfile(userId: string, profileData: UpdateProfile): Promise<UserProfile | undefined>;
   
   // Task operations
   getTasks(userId: string): Promise<Task[]>;
@@ -53,38 +44,6 @@ export class DatabaseStorage implements IStorage {
     return user;
   }
 
-  // Profile operations
-  async getProfile(userId: string): Promise<UserProfile | undefined> {
-    const [profile] = await db
-      .select()
-      .from(userProfiles)
-      .where(eq(userProfiles.userId, userId));
-    return profile;
-  }
-
-  async createProfile(userId: string, profileData: InsertProfile): Promise<UserProfile> {
-    const [profile] = await db
-      .insert(userProfiles)
-      .values({
-        userId,
-        ...profileData,
-      })
-      .returning();
-    return profile;
-  }
-
-  async updateProfile(userId: string, profileData: UpdateProfile): Promise<UserProfile | undefined> {
-    const [profile] = await db
-      .update(userProfiles)
-      .set({
-        ...profileData,
-        updatedAt: new Date(),
-      })
-      .where(eq(userProfiles.userId, userId))
-      .returning();
-    return profile;
-  }
-
   // Task operations
   async getTasks(userId: string): Promise<Task[]> {
     return await db
@@ -107,7 +66,9 @@ export class DatabaseStorage implements IStorage {
       .insert(tasks)
       .values({
         userId,
-        ...taskData,
+        title: taskData.title,
+        description: taskData.description,
+        completed: taskData.completed,
       })
       .returning();
     return task;

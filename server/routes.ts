@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth, isAuthenticated, hashPassword, comparePassword } from "./auth";
-import { insertTaskSchema, updateTaskSchema, insertUserSchema, loginSchema, insertProfileSchema, updateProfileSchema } from "@shared/schema";
+import { insertTaskSchema, updateTaskSchema, insertUserSchema, loginSchema } from "@shared/schema";
 import { fromError } from "zod-validation-error";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -103,53 +103,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching user:", error);
       res.status(500).json({ message: "Failed to fetch user" });
-    }
-  });
-
-  // Profile routes
-  app.get('/api/profile', isAuthenticated, async (req, res) => {
-    try {
-      const userId = req.session.userId!;
-      const profile = await storage.getProfile(userId);
-      
-      // If no profile exists, return empty profile
-      if (!profile) {
-        return res.json({ userId, bio: null, avatarUrl: null, location: null });
-      }
-      
-      res.json(profile);
-    } catch (error) {
-      console.error("Error fetching profile:", error);
-      res.status(500).json({ message: "Failed to fetch profile" });
-    }
-  });
-
-  app.patch('/api/profile', isAuthenticated, async (req, res) => {
-    try {
-      const userId = req.session.userId!;
-      const result = updateProfileSchema.safeParse(req.body);
-      
-      if (!result.success) {
-        return res.status(400).json({ 
-          message: fromError(result.error).toString() 
-        });
-      }
-
-      // Check if profile exists
-      let profile = await storage.getProfile(userId);
-      
-      if (!profile) {
-        // Create profile if it doesn't exist
-        profile = await storage.createProfile(userId, result.data);
-      } else {
-        // Update existing profile
-        profile = await storage.updateProfile(userId, result.data);
-      }
-      
-      res.json(profile);
-    } catch (error) {
-      console.error("Error updating profile:", error);
-      res.status(500).json({ message: "Failed to update profile" });
     }
   });
 
