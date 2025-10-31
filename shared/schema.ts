@@ -58,6 +58,8 @@ export const tasks = pgTable("tasks", {
   title: text("title").notNull(),
   description: text("description"),
   completed: boolean("completed").notNull().default(false),
+  priority: varchar("priority", { length: 10 }).notNull().default("medium"),
+  dueDate: timestamp("due_date"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -75,7 +77,10 @@ export const tasksRelations = relations(tasks, ({ one }) => ({
 }));
 
 // Zod schemas for validation
-export const insertTaskSchema = createInsertSchema(tasks).omit({
+export const insertTaskSchema = createInsertSchema(tasks, {
+  // Check for null FIRST before z.coerce.date() to prevent null → 1970-01-01 conversion
+  dueDate: z.union([z.literal(null), z.coerce.date()]).optional(),
+}).omit({
   id: true,
   userId: true,
   createdAt: true,
