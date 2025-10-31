@@ -6,7 +6,7 @@ TaskFlow is a minimal task management application built with a modern full-stack
 
 The application prioritizes clarity, efficiency, and minimal friction in task management workflows, following a "Design System-Based (Productivity Focus)" approach with generous spacing, scannable hierarchy, and contextual actions.
 
-**Latest Update (Oct 30, 2025)**: Migrated from Replit Auth to simple username/password authentication for better user experience and easier setup.
+**Latest Update (Oct 31, 2025)**: Added task priority levels (high/medium/low), due dates with calendar picker, and automatic sorting by due date (earliest first). Tasks are now sorted with upcoming deadlines at the top and tasks without due dates at the bottom.
 
 ## User Preferences
 
