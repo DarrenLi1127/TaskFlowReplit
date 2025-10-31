@@ -181,14 +181,12 @@ export default function Home() {
   const completedTasks = tasks?.filter(task => task.completed) || [];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
-      <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/70">
-        <div className="container flex h-20 items-center justify-between px-8 max-w-5xl mx-auto">
-          <div className="flex items-center gap-3">
-            <div className="rounded-2xl bg-gradient-to-br from-primary to-accent p-2">
-              <ListTodo className="h-6 w-6 text-primary-foreground" />
-            </div>
-            <span className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">TaskFlow</span>
+    <div className="min-h-screen bg-background">
+      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container flex h-16 items-center justify-between px-6 max-w-4xl mx-auto">
+          <div className="flex items-center gap-2">
+            <ListTodo className="h-6 w-6 text-primary" />
+            <span className="text-xl font-semibold">TaskFlow</span>
           </div>
           
           <DropdownMenu>
@@ -229,26 +227,24 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="container px-8 py-10 max-w-5xl mx-auto">
-        <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <main className="container px-6 py-8 max-w-4xl mx-auto">
+        <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              Your Awesome Tasks
-            </h1>
-            <p className="text-base text-muted-foreground font-medium">
+            <h1 className="text-2xl font-semibold mb-1">My Tasks</h1>
+            <p className="text-sm text-muted-foreground">
               {isLoading ? (
-                "Loading your goals..."
+                "Loading..."
               ) : (
-                `🎯 ${incompleteTasks.length} to crush • ✨ ${completedTasks.length} done`
+                `${incompleteTasks.length} active, ${completedTasks.length} completed`
               )}
             </p>
           </div>
           <Button 
             onClick={() => setIsCreateDialogOpen(true)}
-            className="w-full sm:w-auto rounded-full px-6 py-6 text-base font-semibold shadow-lg hover:shadow-xl transition-all hover:scale-105 active:scale-95"
+            className="w-full sm:w-auto"
             data-testid="button-create-task"
           >
-            <Plus className="mr-2 h-5 w-5" />
+            <Plus className="mr-2 h-4 w-4" />
             New Task
           </Button>
         </div>
@@ -299,21 +295,20 @@ export default function Home() {
             )}
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center py-24 text-center">
-            <div className="mb-6 rounded-3xl bg-gradient-to-br from-primary/10 to-accent/10 p-8">
-              <ListTodo className="h-16 w-16 text-primary" />
+          <div className="flex flex-col items-center justify-center py-16 text-center">
+            <div className="mb-4 rounded-full bg-accent p-4">
+              <ListTodo className="h-8 w-8 text-accent-foreground" />
             </div>
-            <h3 className="mb-3 text-2xl font-bold">Ready to Get Things Done?</h3>
-            <p className="mb-8 text-lg text-muted-foreground max-w-md">
-              Your task list is empty! Let's change that and start crushing some goals! 🚀
+            <h3 className="mb-2 text-lg font-medium">No tasks yet</h3>
+            <p className="mb-6 text-sm text-muted-foreground max-w-sm">
+              Create your first task to get started with managing your work
             </p>
             <Button 
               onClick={() => setIsCreateDialogOpen(true)}
               data-testid="button-create-first-task"
-              className="rounded-full px-8 py-6 text-lg font-semibold shadow-lg hover:shadow-xl transition-all hover:scale-105 active:scale-95"
             >
-              <Plus className="mr-2 h-5 w-5" />
-              Create Your First Task
+              <Plus className="mr-2 h-4 w-4" />
+              Create Task
             </Button>
           </div>
         )}

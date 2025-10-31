@@ -2,8 +2,7 @@ import { useState } from "react";
 import type { Task } from "@shared/schema";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Pencil, Trash2, Star, Calendar, Clock } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -25,36 +24,10 @@ interface TaskItemProps {
 export function TaskItem({ task, onToggle, onEdit, onDelete }: TaskItemProps) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
-  const formatDueDate = (date: Date | string) => {
-    const dueDate = new Date(date);
-    const now = new Date();
-    const isOverdue = dueDate < now && !task.completed;
-    const isToday = dueDate.toDateString() === now.toDateString();
-    
-    const dateStr = dueDate.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: dueDate.getFullYear() !== now.getFullYear() ? 'numeric' : undefined,
-    });
-    
-    const timeStr = dueDate.toLocaleTimeString('en-US', {
-      hour: 'numeric',
-      minute: '2-digit',
-    });
-
-    return { dateStr, timeStr, isOverdue, isToday };
-  };
-
-  const dueInfo = task.dueDate ? formatDueDate(task.dueDate) : null;
-
   return (
     <>
       <div 
-        className={`group rounded-2xl border p-5 hover-elevate transition-all duration-200 ${
-          task.isImportant && !task.completed
-            ? "border-secondary/40 bg-gradient-to-br from-secondary/5 to-transparent"
-            : ""
-        }`}
+        className="group rounded-md border p-4 hover-elevate transition-all duration-200"
         data-testid={`task-item-${task.id}`}
       >
         <div className="flex items-start gap-4">
@@ -66,25 +39,19 @@ export function TaskItem({ task, onToggle, onEdit, onDelete }: TaskItemProps) {
           />
           
           <div className="flex-1 min-w-0">
-            <div className="flex items-start gap-2 mb-1">
-              {task.isImportant && (
-                <Star className="h-5 w-5 text-secondary fill-secondary flex-shrink-0 mt-0.5" data-testid={`icon-important-${task.id}`} />
-              )}
-              <h3 
-                className={`font-semibold text-base transition-all duration-200 ${
-                  task.completed 
-                    ? "line-through opacity-60" 
-                    : ""
-                }`}
-                data-testid={`text-task-title-${task.id}`}
-              >
-                {task.title}
-              </h3>
-            </div>
-            
+            <h3 
+              className={`font-medium transition-all duration-200 ${
+                task.completed 
+                  ? "line-through opacity-60" 
+                  : ""
+              }`}
+              data-testid={`text-task-title-${task.id}`}
+            >
+              {task.title}
+            </h3>
             {task.description && (
               <p 
-                className={`text-sm mt-1.5 transition-all duration-200 ${
+                className={`text-sm mt-1 transition-all duration-200 ${
                   task.completed 
                     ? "opacity-40" 
                     : "text-muted-foreground"
@@ -94,29 +61,15 @@ export function TaskItem({ task, onToggle, onEdit, onDelete }: TaskItemProps) {
                 {task.description}
               </p>
             )}
-            
-            <div className="flex flex-wrap items-center gap-3 mt-3">
-              {dueInfo && (
-                <Badge 
-                  variant={dueInfo.isOverdue ? "destructive" : dueInfo.isToday ? "default" : "secondary"}
-                  className="rounded-full text-xs font-medium"
-                  data-testid={`badge-due-date-${task.id}`}
-                >
-                  <Calendar className="h-3 w-3 mr-1" />
-                  {dueInfo.dateStr}
-                  <Clock className="h-3 w-3 ml-2 mr-1" />
-                  {dueInfo.timeStr}
-                </Badge>
-              )}
-              {task.createdAt && (
-                <span className="text-xs text-muted-foreground">
-                  Created {new Date(task.createdAt).toLocaleDateString('en-US', {
-                    month: 'short',
-                    day: 'numeric',
-                  })}
-                </span>
-              )}
-            </div>
+            {task.createdAt && (
+              <p className="text-xs text-muted-foreground mt-2">
+                {new Date(task.createdAt).toLocaleDateString('en-US', {
+                  month: 'short',
+                  day: 'numeric',
+                  year: 'numeric',
+                })}
+              </p>
+            )}
           </div>
 
           <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">

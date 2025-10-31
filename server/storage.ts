@@ -68,28 +68,19 @@ export class DatabaseStorage implements IStorage {
         userId,
         title: taskData.title,
         description: taskData.description,
-        completed: taskData.completed ?? false,
-        isImportant: taskData.isImportant ?? false,
-        dueDate: taskData.dueDate && taskData.dueDate !== "" ? new Date(taskData.dueDate) : null,
+        completed: taskData.completed,
       })
       .returning();
     return task;
   }
 
   async updateTask(id: number, userId: string, taskData: UpdateTask): Promise<Task | undefined> {
-    const updateData: any = {
-      ...taskData,
-      updatedAt: new Date(),
-    };
-    
-    // Convert dueDate string to Date object if present
-    if (taskData.dueDate !== undefined) {
-      updateData.dueDate = taskData.dueDate && taskData.dueDate !== "" ? new Date(taskData.dueDate) : null;
-    }
-    
     const [task] = await db
       .update(tasks)
-      .set(updateData)
+      .set({
+        ...taskData,
+        updatedAt: new Date(),
+      })
       .where(and(eq(tasks.id, id), eq(tasks.userId, userId)))
       .returning();
     return task;
