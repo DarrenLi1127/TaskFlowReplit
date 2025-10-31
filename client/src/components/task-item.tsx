@@ -27,23 +27,23 @@ export function TaskItem({ task, onToggle, onEdit, onDelete }: TaskItemProps) {
   return (
     <>
       <div 
-        className="group rounded-md border p-4 hover-elevate transition-all duration-200"
+        className="group rounded-lg border bg-card p-5 hover-elevate transition-all duration-200 shadow-sm hover:shadow-md"
         data-testid={`task-item-${task.id}`}
       >
         <div className="flex items-start gap-4">
           <Checkbox
             checked={task.completed}
             onCheckedChange={(checked) => onToggle(!!checked)}
-            className="mt-0.5 flex-shrink-0"
+            className="mt-1 flex-shrink-0"
             data-testid={`checkbox-task-${task.id}`}
           />
           
           <div className="flex-1 min-w-0">
             <h3 
-              className={`font-medium transition-all duration-200 ${
+              className={`text-base font-semibold transition-all duration-200 ${
                 task.completed 
-                  ? "line-through opacity-60" 
-                  : ""
+                  ? "line-through opacity-50 text-muted-foreground" 
+                  : "text-foreground"
               }`}
               data-testid={`text-task-title-${task.id}`}
             >
@@ -51,9 +51,9 @@ export function TaskItem({ task, onToggle, onEdit, onDelete }: TaskItemProps) {
             </h3>
             {task.description && (
               <p 
-                className={`text-sm mt-1 transition-all duration-200 ${
+                className={`text-sm mt-2 transition-all duration-200 leading-relaxed ${
                   task.completed 
-                    ? "opacity-40" 
+                    ? "opacity-40 line-through" 
                     : "text-muted-foreground"
                 }`}
                 data-testid={`text-task-description-${task.id}`}
@@ -62,21 +62,24 @@ export function TaskItem({ task, onToggle, onEdit, onDelete }: TaskItemProps) {
               </p>
             )}
             {task.createdAt && (
-              <p className="text-xs text-muted-foreground mt-2">
-                {new Date(task.createdAt).toLocaleDateString('en-US', {
-                  month: 'short',
-                  day: 'numeric',
-                  year: 'numeric',
-                })}
-              </p>
+              <div className="flex items-center gap-2 mt-3">
+                <p className="text-xs font-medium text-muted-foreground/70">
+                  {new Date(task.createdAt).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                  })}
+                </p>
+              </div>
             )}
           </div>
 
-          <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
+          <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-150 flex-shrink-0">
             <Button
               variant="ghost"
               size="icon"
               onClick={onEdit}
+              className="h-8 w-8"
               data-testid={`button-edit-task-${task.id}`}
             >
               <Pencil className="h-4 w-4" />
@@ -85,6 +88,7 @@ export function TaskItem({ task, onToggle, onEdit, onDelete }: TaskItemProps) {
               variant="ghost"
               size="icon"
               onClick={() => setShowDeleteDialog(true)}
+              className="h-8 w-8 text-destructive/70 hover:text-destructive"
               data-testid={`button-delete-task-${task.id}`}
             >
               <Trash2 className="h-4 w-4" />

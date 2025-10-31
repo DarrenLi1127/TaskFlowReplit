@@ -182,11 +182,13 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-lg supports-[backdrop-filter]:bg-background/60 shadow-sm">
         <div className="container flex h-16 items-center justify-between px-6 max-w-4xl mx-auto">
-          <div className="flex items-center gap-2">
-            <ListTodo className="h-6 w-6 text-primary" />
-            <span className="text-xl font-semibold">TaskFlow</span>
+          <div className="flex items-center gap-3">
+            <div className="p-1.5 rounded-lg bg-primary/10">
+              <ListTodo className="h-5 w-5 text-primary" />
+            </div>
+            <span className="text-xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">TaskFlow</span>
           </div>
           
           <DropdownMenu>
@@ -227,24 +229,35 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="container px-6 py-8 max-w-4xl mx-auto">
-        <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <main className="container px-6 py-10 max-w-4xl mx-auto">
+        <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-semibold mb-1">My Tasks</h1>
-            <p className="text-sm text-muted-foreground">
+            <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">My Tasks</h1>
+            <p className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               {isLoading ? (
                 "Loading..."
               ) : (
-                `${incompleteTasks.length} active, ${completedTasks.length} completed`
+                <>
+                  <span className="inline-flex items-center gap-1.5">
+                    <span className="h-2 w-2 rounded-full bg-primary animate-pulse"></span>
+                    {incompleteTasks.length} active
+                  </span>
+                  <span className="text-muted-foreground/50">•</span>
+                  <span className="inline-flex items-center gap-1.5">
+                    <span className="h-2 w-2 rounded-full bg-muted-foreground/50"></span>
+                    {completedTasks.length} completed
+                  </span>
+                </>
               )}
             </p>
           </div>
           <Button 
             onClick={() => setIsCreateDialogOpen(true)}
-            className="w-full sm:w-auto"
+            className="w-full sm:w-auto shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all"
+            size="lg"
             data-testid="button-create-task"
           >
-            <Plus className="mr-2 h-4 w-4" />
+            <Plus className="mr-2 h-5 w-5" />
             New Task
           </Button>
         </div>
@@ -281,7 +294,11 @@ export default function Home() {
 
             {completedTasks.length > 0 && (
               <div className="space-y-3">
-                <h2 className="text-sm font-medium text-muted-foreground">Completed</h2>
+                <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide flex items-center gap-2">
+                  <span className="h-px flex-1 bg-border"></span>
+                  <span>Completed</span>
+                  <span className="h-px flex-1 bg-border"></span>
+                </h2>
                 {completedTasks.map((task) => (
                   <TaskItem
                     key={task.id}
@@ -295,20 +312,22 @@ export default function Home() {
             )}
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center py-16 text-center">
-            <div className="mb-4 rounded-full bg-accent p-4">
-              <ListTodo className="h-8 w-8 text-accent-foreground" />
+          <div className="flex flex-col items-center justify-center py-20 text-center">
+            <div className="mb-6 rounded-2xl bg-gradient-to-br from-accent to-accent/50 p-6 shadow-lg">
+              <ListTodo className="h-12 w-12 text-accent-foreground" />
             </div>
-            <h3 className="mb-2 text-lg font-medium">No tasks yet</h3>
-            <p className="mb-6 text-sm text-muted-foreground max-w-sm">
-              Create your first task to get started with managing your work
+            <h3 className="mb-3 text-2xl font-bold">No tasks yet</h3>
+            <p className="mb-8 text-base text-muted-foreground max-w-md leading-relaxed">
+              Start organizing your work by creating your first task. Track progress, stay focused, and get things done.
             </p>
             <Button 
               onClick={() => setIsCreateDialogOpen(true)}
+              size="lg"
+              className="shadow-lg shadow-primary/20"
               data-testid="button-create-first-task"
             >
-              <Plus className="mr-2 h-4 w-4" />
-              Create Task
+              <Plus className="mr-2 h-5 w-5" />
+              Create Your First Task
             </Button>
           </div>
         )}
