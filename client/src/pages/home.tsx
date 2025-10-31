@@ -18,7 +18,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { TaskItem } from "@/components/task-item";
 import { TaskDialog } from "@/components/task-dialog";
-import { Plus, ListTodo, LogOut, User } from "lucide-react";
+import { Plus, ListTodo, LogOut, User as UserIcon } from "lucide-react";
+import { Link } from "wouter";
 
 export default function Home() {
   const { user } = useAuth();
@@ -214,6 +215,12 @@ export default function Home() {
                 </div>
               </div>
               <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <Link href="/profile" className="cursor-pointer" data-testid="link-profile">
+                  <UserIcon className="mr-2 h-4 w-4" />
+                  <span>Profile</span>
+                </Link>
+              </DropdownMenuItem>
               <DropdownMenuItem 
                 onClick={handleLogout}
                 className="cursor-pointer"
