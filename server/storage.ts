@@ -8,7 +8,7 @@ import {
   type UpdateTask,
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, and, desc, asc } from "drizzle-orm";
+import { eq, and, desc } from "drizzle-orm";
 
 export interface IStorage {
   // User operations
@@ -46,13 +46,11 @@ export class DatabaseStorage implements IStorage {
 
   // Task operations
   async getTasks(userId: string): Promise<Task[]> {
-    // Sort by due date ascending (earliest first), with null dates at the end
-    // For tasks with the same due date (or no due date), sort by creation time descending
     return await db
       .select()
       .from(tasks)
       .where(eq(tasks.userId, userId))
-      .orderBy(asc(tasks.dueDate), desc(tasks.createdAt));
+      .orderBy(desc(tasks.createdAt));
   }
 
   async getTask(id: number, userId: string): Promise<Task | undefined> {
@@ -67,9 +65,11 @@ export class DatabaseStorage implements IStorage {
     const [task] = await db
       .insert(tasks)
       .values({
-        ...taskData,
         userId,
-      } as any)
+        title: taskData.title,
+        description: taskData.description,
+        completed: taskData.completed,
+      })
       .returning();
     return task;
   }
